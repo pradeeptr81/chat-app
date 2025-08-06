@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/<your-username>/chat-app.git'
+                git 'https://github.com/pradeeptr81/chat-app.git'
             }
         }
 
