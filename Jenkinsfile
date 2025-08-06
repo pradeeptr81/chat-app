@@ -1,21 +1,16 @@
 pipeline {
-    agent any
-
-    environment {
-        IMAGE_NAME = "chat-app"
+    agent {
+        docker {
+            image 'docker:24.0.2-cli' // any Docker CLI image
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
 
     stages {
-        stage('Clone') {
-            steps {
-                git 'https://github.com/pradeeptr81/chat-app.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}")
+                    docker.build('chat-app')
                 }
             }
         }
@@ -23,19 +18,9 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    sh '''
-                    docker stop chat-app || true
-                    docker rm chat-app || true
-                    docker run -d -p 3000:3000 --name chat-app ${IMAGE_NAME}
-                    '''
+                    sh 'docker run -d -p 3000:3000 --name chat-app chat-app'
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline complete'
         }
     }
 }
